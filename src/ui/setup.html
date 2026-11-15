@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pronote → iPhone</title>
+<style>
+  :root {
+    --bg: #f5f6f8; --carte: #ffffff; --texte: #15171a; --doux: #5d6470; --bord: #e2e5ea;
+    --accent: #2f6fde; --accent-texte: #ffffff; --ok: #1f9d55; --erreur: #d33a3a; --zone: #f0f4fd;
+    --ombre: 0 1px 2px rgba(16,24,40,.05), 0 4px 16px rgba(16,24,40,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1115; --carte: #181b21; --texte: #eceef2; --doux: #9aa3b2; --bord: #2a2f38;
+      --accent: #5b8ff0; --accent-texte: #0b0d10; --ok: #3ccf7a; --erreur: #ff6b6b; --zone: #1b2335;
+      --ombre: none;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--texte);
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 760px; margin: 0 auto; padding: 32px 16px 64px; }
+  header h1 { margin: 0; font-size: 28px; letter-spacing: -.01em; }
+  header p { margin: 4px 0 28px; color: var(--doux); }
+
+  .etape {
+    background: var(--carte); border: 1px solid var(--bord); border-radius: 14px;
+    padding: 22px; margin-bottom: 16px; box-shadow: var(--ombre); transition: opacity .2s;
+  }
+  .etape.inactive { opacity: .45; pointer-events: none; }
+  .etape h2 { margin: 0 0 4px; font-size: 19px; display: flex; align-items: center; gap: 10px; }
+  .num {
+    width: 26px; height: 26px; border-radius: 50%; display: inline-grid; place-items: center;
+    background: var(--accent); color: var(--accent-texte); font-size: 14px; font-weight: 700; flex: none;
+  }
+  .etape.faite .num { background: var(--ok); }
+  .etape.faite .num::after { content: "✓"; }
+  .etape.faite .num span { display: none; }
+  .aide { color: var(--doux); margin: 0 0 16px; font-size: 15px; }
+  ol.aide { padding-left: 20px; }
+  ol.aide li { margin: 2px 0; }
+
+  #zone {
+    border: 2px dashed var(--bord); border-radius: 12px; padding: 28px 16px; text-align: center;
+    cursor: pointer; transition: border-color .15s, background .15s; background: transparent;
+    width: 100%; color: inherit; font: inherit;
+  }
+  #zone:hover, #zone:focus-visible, body.survol #zone { border-color: var(--accent); background: var(--zone); outline: none; }
+  #zone strong { display: block; font-size: 17px; }
+  #zone small { color: var(--doux); }
+  kbd {
+    font: 12px ui-monospace, Consolas, monospace; border: 1px solid var(--bord); border-bottom-width: 2px;
+    border-radius: 5px; padding: 1px 6px; background: var(--bg);
+  }
+  #apercu { display: none; align-items: center; gap: 14px; margin-top: 14px; }
+  #apercu img { width: 72px; height: 72px; object-fit: cover; border-radius: 8px; border: 1px solid var(--bord); }
+
+  label { display: block; font-weight: 600; margin: 16px 0 6px; font-size: 15px; }
+  input[type=text], input[type=password] {
+    width: 100%; padding: 11px 12px; border-radius: 10px; border: 1px solid var(--bord);
+    background: var(--bg); color: var(--texte); font: inherit;
+  }
+  input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  #pin { font-size: 26px; letter-spacing: .5em; text-align: center; max-width: 180px; font-variant-numeric: tabular-nums; }
+
+  button.principal, a.bouton {
+    display: inline-flex; align-items: center; gap: 8px; margin-top: 18px; padding: 11px 18px;
+    border-radius: 10px; border: 0; background: var(--accent); color: var(--accent-texte);
+    font-family: inherit; font-size: 15px; font-weight: 600; line-height: 1; cursor: pointer; text-decoration: none;
+  }
+  a.bouton.secondaire, button.secondaire {
+    background: transparent; color: var(--accent); border: 1px solid var(--bord); margin-top: 0;
+  }
+  button:disabled { opacity: .5; cursor: progress; }
+
+  .statut { margin-top: 12px; font-size: 15px; min-height: 1.5em; }
+  .statut.ok { color: var(--ok); } .statut.erreur { color: var(--erreur); }
+  .spin {
+    width: 14px; height: 14px; border: 2px solid currentColor; border-right-color: transparent;
+    border-radius: 50%; display: inline-block; animation: tourne .7s linear infinite; vertical-align: -2px;
+  }
+  @keyframes tourne { to { transform: rotate(360deg); } }
+  details { margin-top: 14px; color: var(--doux); font-size: 15px; }
+  summary { cursor: pointer; }
+
+  .secret {
+    display: grid; grid-template-columns: 120px 1fr auto; gap: 10px; align-items: center;
+    padding: 10px 0; border-top: 1px solid var(--bord);
+  }
+  .secret:first-of-type { border-top: 0; }
+  .secret code {
+    font: 13px ui-monospace, Consolas, monospace; overflow-wrap: anywhere; background: var(--bg);
+    padding: 6px 8px; border-radius: 6px;
+  }
+  .secret b { font: 600 13px ui-monospace, Consolas, monospace; }
+  .copier {
+    border: 1px solid var(--bord); background: var(--carte); color: var(--texte); border-radius: 8px;
+    padding: 6px 10px; font-family: inherit; font-size: 13px; cursor: pointer; white-space: nowrap;
+  }
+  .copier.fait { color: var(--ok); border-color: var(--ok); }
+
+  .grille { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 12px; }
+  .cal {
+    border: 1px solid var(--bord); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .cal.tout { border-color: var(--accent); }
+  .cal .titre { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 15px; }
+  .pastille { width: 12px; height: 12px; border-radius: 50%; flex: none; background: var(--doux); }
+  .cal .qr { background: #fff; border-radius: 8px; padding: 6px; }
+  .cal .qr svg { display: block; width: 100%; height: auto; }
+  h3 { margin: 24px 0 4px; font-size: 16px; }
+  .astuce {
+    background: var(--zone); border-radius: 10px; padding: 12px 14px; font-size: 14.5px; margin-top: 12px;
+  }
+  @media (max-width: 520px) {
+    .secret { grid-template-columns: 1fr auto; }
+    .secret b { grid-column: 1 / -1; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>📅 Pronote → iPhone</h1>
+    <p>Configuration en 3 étapes. Tout se passe sur ton PC : cette page n'est pas en ligne.</p>
+  </header>
+
+  <!-- ÉTAPE 1 -->
+  <section class="etape" id="e1">
+    <h2><span class="num"><span>1</span></span> Connexion à Pronote</h2>
+    <ol class="aide">
+      <li>Ouvre Pronote dans un autre onglet, en passant par ton ENT comme d'habitude.</li>
+      <li>Clique sur l'icône <b>QR code / téléphone</b> en haut de la page et choisis un <b>code à 4 chiffres</b>.</li>
+      <li>Fais une capture d'écran (<kbd>Windows</kbd> + <kbd>Maj</kbd> + <kbd>S</kbd>) et colle-la ici avec <kbd>Ctrl</kbd> + <kbd>V</kbd>.</li>
+    </ol>
+
+    <button id="zone" type="button">
+      <strong>Colle la capture ici (Ctrl + V)</strong>
+      <small>ou glisse l'image du QR code, ou clique pour la choisir</small>
+    </button>
+    <input id="fichier" type="file" accept="image/*" hidden>
+
+    <div id="apercu">
+      <img id="miniature" alt="Capture du QR code">
+      <div id="qrStatut" class="statut"></div>
+    </div>
+
+    <label for="pin">Ton code à 4 chiffres</label>
+    <input id="pin" type="text" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••">
+
+    <div>
+      <button class="principal" id="btnConnexion" disabled>Se connecter à Pronote</button>
+    </div>
+    <div id="s1" class="statut"></div>
+  </section>
+
+  <!-- ÉTAPE 2 -->
+  <section class="etape inactive" id="e2">
+    <h2><span class="num"><span>2</span></span> Créer tes calendriers</h2>
+    <p class="aide">
+      Il faut un « token » GitHub qui a <b>seulement</b> le droit <b>gist</b>. Il permet de ranger les calendriers dans un Gist secret.
+      Sur la page GitHub : choisis l'expiration <b>No expiration</b>, clique <b>Generate token</b> et copie le code <code>ghp_…</code>.
+    </p>
+    <a class="bouton secondaire" target="_blank" rel="noopener"
+       href="https://github.com/settings/tokens/new?scopes=gist&description=pronote-ical">Créer le token sur GitHub ↗</a>
+
+    <label for="token">Token GitHub</label>
+    <input id="token" type="password" autocomplete="off" placeholder="ghp_…">
+    <div id="tokenExistant" class="aide" hidden style="margin:6px 0 0">Laisse vide pour réutiliser le token déjà enregistré.</div>
+
+    <details id="avance">
+      <summary>Tu refais la connexion ? (Gist existant)</summary>
+      <label for="gist">Identifiant du Gist (GIST_ID)</label>
+      <input id="gist" type="text" autocomplete="off" placeholder="Laisse vide pour en créer un nouveau">
+      <p style="margin:6px 0 0">Réutiliser le même Gist évite de devoir refaire les abonnements sur l'iPhone.</p>
+    </details>
+
+    <div>
+      <button class="principal" id="btnCreer">Créer mes calendriers</button>
+    </div>
+    <div id="s2" class="statut"></div>
+  </section>
+
+  <!-- ÉTAPE 3 -->
+  <section class="etape inactive" id="e3">
+    <h2><span class="num"><span>3</span></span> Brancher GitHub et l'iPhone</h2>
+
+    <h3>A. Les 3 secrets à mettre dans GitHub</h3>
+    <p class="aide">Dans ton dépôt : <b>Settings › Secrets and variables › Actions › New repository secret</b>. Crée ces 3 secrets :</p>
+    <div id="secrets"></div>
+    <div id="zoneGh" hidden>
+      <button class="principal" id="btnGh">Les enregistrer automatiquement dans GitHub</button>
+      <div id="sGh" class="statut"></div>
+    </div>
+    <div class="astuce">Ensuite : onglet <b>Actions › Synchro Pronote → iPhone › Run workflow</b>. Au bout d'environ 1 minute, il doit y avoir une coche verte ✅.<br>
+      Tout est aussi enregistré dans <code>mes-secrets.txt</code>. Garde ce fichier en lieu sûr et ne le partage pas.</div>
+
+    <h3>B. Les calendriers à ajouter sur l'iPhone</h3>
+    <p class="aide">Scanne un QR code avec l'<b>appareil photo de l'iPhone</b>, touche la bannière, puis <b>S'abonner</b>.
+      Pour avoir <b>une couleur par matière</b>, scanne chaque matière. Si tu veux juste aller vite, scanne seulement « Tout l'emploi du temps ».</p>
+    <div class="grille" id="calendriers"></div>
+    <div class="astuce">Le QR code ne marche pas ? Copie le lien, puis sur l'iPhone : <b>Réglages › Calendrier › Comptes › Ajouter un compte › Autre › Ajouter un calendrier avec abonnement</b>.</div>
+
+    <p class="aide" style="margin-top:20px">C'est fini 🎉 Tu peux fermer cette page et la fenêtre noire.</p>
+  </section>
+</main>
+
+<script src="/jsqr.js"></script>
+<script>
+const JETON = "__JETON__";
+const $ = (id) => document.getElementById(id);
+let qrPronote = null;
+
+async function appel(nom, corps = {}) {
+  const r = await fetch("/api/" + nom, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Jeton": JETON },
+    body: JSON.stringify(corps),
+  });
+  const json = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(json.erreur || "Erreur " + r.status);
+  return json;
+}
+
+function statut(el, texte, type = "", chargement = false) {
+  el.className = "statut " + type;
+  el.innerHTML = "";
+  if (chargement) { const s = document.createElement("span"); s.className = "spin"; el.append(s, " "); }
+  el.append(texte);
+}
+
+/* ------------------------------ lecture du QR ------------------------------ */
+
+function lireImage(fichier) {
+  return new Promise((ok, ko) => {
+    const img = new Image();
+    img.onload = () => ok(img);
+    img.onerror = () => ko(new Error("Impossible de lire cette image."));
+    img.src = URL.createObjectURL(fichier);
+  });
+}
+
+function decoder(img) {
+  // On essaie en taille réelle, puis en plus petit (plus rapide et parfois plus fiable).
+  for (const echelle of [1, 0.6, 0.35]) {
+    const w = Math.round(img.naturalWidth * echelle), h = Math.round(img.naturalHeight * echelle);
+    if (w < 80) break;
+    const c = document.createElement("canvas");
+    c.width = w; c.height = h;
+    const ctx = c.getContext("2d", { willReadFrequently: true });
+    ctx.drawImage(img, 0, 0, w, h);
+    const res = jsQR(ctx.getImageData(0, 0, w, h).data, w, h);
+    if (res) return res.data;
+  }
+  return null;
+}
+
+function accepterTexte(texte) {
+  let qr;
+  try { qr = JSON.parse(texte); } catch { qr = null; }
+  if (!qr || !qr.url || !qr.jeton) {
+    statut($("qrStatut"), "Ce QR code ne vient pas de Pronote. Utilise celui de « l'application mobile ».", "erreur");
+    qrPronote = null;
+  } else {
+    qrPronote = qr;
+    statut($("qrStatut"), "QR code Pronote détecté ✓", "ok");
+    $("pin").focus();
+  }
+  majBouton();
+}
+
+async function traiterFichier(fichier) {
+  if (!fichier || !fichier.type.startsWith("image/")) return;
+  $("apercu").style.display = "flex";
+  $("miniature").src = URL.createObjectURL(fichier);
+  statut($("qrStatut"), "Lecture du QR code…", "", true);
+  try {
+    const texte = decoder(await lireImage(fichier));
+    if (!texte) {
+      qrPronote = null;
+      statut($("qrStatut"), "Aucun QR code trouvé. Recadre la capture sur le QR code et réessaie.", "erreur");
+      majBouton();
+      return;
+    }
+    accepterTexte(texte);
+  } catch (e) {
+    statut($("qrStatut"), e.message, "erreur");
+  }
+}
+
+$("zone").addEventListener("click", () => $("fichier").click());
+$("fichier").addEventListener("change", (e) => traiterFichier(e.target.files[0]));
+
+document.addEventListener("paste", (e) => {
+  if ($("e1").classList.contains("faite")) return;
+  const items = [...(e.clipboardData?.items || [])];
+  const image = items.find((i) => i.type.startsWith("image/"));
+  if (image) { e.preventDefault(); traiterFichier(image.getAsFile()); return; }
+  const texte = e.clipboardData?.getData("text") || "";
+  if (texte.trim().startsWith("{") && document.activeElement?.tagName !== "INPUT") {
+    e.preventDefault(); $("apercu").style.display = "flex"; $("miniature").removeAttribute("src"); accepterTexte(texte.trim());
+  }
+});
+
+let profondeur = 0;
+document.addEventListener("dragenter", (e) => { e.preventDefault(); profondeur++; document.body.classList.add("survol"); });
+document.addEventListener("dragleave", () => { if (--profondeur <= 0) { profondeur = 0; document.body.classList.remove("survol"); } });
+document.addEventListener("dragover", (e) => e.preventDefault());
+document.addEventListener("drop", (e) => {
+  e.preventDefault(); profondeur = 0; document.body.classList.remove("survol");
+  traiterFichier(e.dataTransfer.files[0]);
+});
+
+/* -------------------------------- étape 1 --------------------------------- */
+
+const pinValide = () => /^\d{4}$/.test($("pin").value);
+function majBouton() { $("btnConnexion").disabled = !(qrPronote && pinValide()); }
+$("pin").addEventListener("input", () => { $("pin").value = $("pin").value.replace(/\D/g, "").slice(0, 4); majBouton(); });
+$("pin").addEventListener("keydown", (e) => { if (e.key === "Enter" && !$("btnConnexion").disabled) $("btnConnexion").click(); });
+
+$("btnConnexion").addEventListener("click", async () => {
+  $("btnConnexion").disabled = true;
+  statut($("s1"), "Connexion à Pronote…", "", true);
+  try {
+    const { nom } = await appel("connexion", { qr: qrPronote, pin: $("pin").value });
+    statut($("s1"), "Connecté(e) : " + nom, "ok");
+    $("e1").classList.add("faite");
+    $("e1").querySelectorAll("button, input").forEach((el) => (el.disabled = true));
+    $("e2").classList.remove("inactive");
+    $("token").focus();
+  } catch (e) {
+    statut($("s1"), e.message, "erreur");
+    majBouton();
+  }
+});
+
+/* -------------------------------- étape 2 --------------------------------- */
+
+$("btnCreer").addEventListener("click", async () => {
+  $("btnCreer").disabled = true;
+  statut($("s2"), "Récupération de l'emploi du temps et création des calendriers…", "", true);
+  try {
+    const res = await appel("creer", { githubToken: $("token").value, gistId: $("gist").value });
+    statut($("s2"), res.calendriers.length - 1 + " calendriers créés", "ok");
+    $("e2").classList.add("faite");
+    $("e2").querySelectorAll("button, input").forEach((el) => (el.disabled = true));
+    afficherResultat(res);
+  } catch (e) {
+    statut($("s2"), e.message, "erreur");
+    $("btnCreer").disabled = false;
+  }
+});
+
+/* -------------------------------- étape 3 --------------------------------- */
+
+function boutonCopier(valeur, libelle = "Copier") {
+  const b = document.createElement("button");
+  b.className = "copier"; b.textContent = libelle;
+  b.addEventListener("click", async () => {
+    await navigator.clipboard.writeText(valeur);
+    b.textContent = "Copié ✓"; b.classList.add("fait");
+    setTimeout(() => { b.textContent = libelle; b.classList.remove("fait"); }, 1600);
+  });
+  return b;
+}
+
+let secretsCourants = null;
+function afficherResultat({ secrets, calendriers }) {
+  secretsCourants = secrets;
+  const boite = $("secrets"); boite.innerHTML = "";
+  for (const [nom, valeur] of Object.entries(secrets)) {
+    const ligne = document.createElement("div"); ligne.className = "secret";
+    const b = document.createElement("b"); b.textContent = nom;
+    const code = document.createElement("code");
+    code.textContent = nom === "GIST_TOKEN" ? valeur.slice(0, 8) + "…" : valeur;
+    ligne.append(b, code, boutonCopier(valeur));
+    boite.append(ligne);
+  }
+
+  const grille = $("calendriers"); grille.innerHTML = "";
+  for (const c of calendriers) {
+    const carte = document.createElement("div"); carte.className = "cal" + (c.tout ? " tout" : "");
+    const titre = document.createElement("div"); titre.className = "titre";
+    const pastille = document.createElement("span"); pastille.className = "pastille";
+    if (c.couleur) pastille.style.background = c.couleur;
+    if (c.tout) pastille.style.background = "conic-gradient(#e74c3c, #f39c12, #f1c40f, #2ecc71, #3498db, #9b59b6, #e74c3c)";
+    const nom = document.createElement("span"); nom.textContent = c.nom;
+    titre.append(pastille, nom);
+    const qr = document.createElement("div"); qr.className = "qr"; qr.innerHTML = c.qr;
+    carte.append(titre, qr, boutonCopier(c.https, "Copier le lien"));
+    grille.append(carte);
+  }
+
+  $("e3").classList.remove("inactive");
+  $("e3").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+$("btnGh").addEventListener("click", async () => {
+  $("btnGh").disabled = true;
+  statut($("sGh"), "Enregistrement…", "", true);
+  try { await appel("secretsGh", { secrets: secretsCourants }); statut($("sGh"), "Secrets enregistrés dans GitHub ✓", "ok"); }
+  catch (e) { statut($("sGh"), e.message, "erreur"); $("btnGh").disabled = false; }
+});
+
+/* -------------------------------- démarrage ------------------------------- */
+
+appel("infos").then((i) => {
+  if (i.gistIdExistant) { $("gist").value = i.gistIdExistant; $("avance").open = true; }
+  if (i.tokenExistant) $("tokenExistant").hidden = false;
+  $("zoneGh").hidden = !i.ghDisponible;
+}).catch(() => {});
+</script>
+</body>
+</html>
