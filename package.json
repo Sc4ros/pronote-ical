@@ -14,11 +14,11 @@
     "sync": "node src/sync.js",
     "test": "node test/test-ics.js"
   },
-  "dependencies": {
-    "pawnote": "1.6.2"
-  },
   "devDependencies": {
     "jsqr": "1.4.0",
     "qrcode": "1.5.4"
+  },
+  "dependencies": {
+    "@blockshub/pawnote-lts": "1.6.4"
   }
 }

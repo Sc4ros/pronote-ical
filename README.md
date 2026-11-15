@@ -190,7 +190,7 @@ Dans le dépôt : **Settings › Secrets and variables › Actions › onglet Va
 © 2026 Sc4ros. Tous droits réservés. Voir le fichier [LICENSE](LICENSE).
 
 Composants tiers : ils ne sont pas inclus dans ce dépôt (npm les installe) et gardent leur propre licence :
-- [pawnote](https://www.npmjs.com/package/pawnote) : GPL-3.0-or-later
+- [@blockshub/pawnote-lts](https://github.com/BlocksHub/Pawnote-LTS) : GPL-3.0-or-later. Fork maintenu de [pawnote](https://github.com/LiterateInk/Pawnote), compatible avec Pronote 2026.
 - [jsqr](https://www.npmjs.com/package/jsqr) : Apache-2.0
 - [qrcode](https://www.npmjs.com/package/qrcode) : MIT
 

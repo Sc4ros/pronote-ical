@@ -3,7 +3,7 @@
 process.env.TZ = "Europe/Paris"; // Pronote donne les heures en heure de Paris
 
 import { createCipheriv, createDecipheriv, createHash, randomBytes } from "node:crypto";
-import * as pronote from "pawnote";
+import * as pronote from "@blockshub/pawnote-lts"; // fork maintenu de pawnote, compatible Pronote 2026
 import { construireCalendriers, calendrierVide } from "./ics.js";
 
 export const FICHIER_ETAT = "etat-connexion.chiffre";
@@ -70,11 +70,8 @@ export function creerFetcher() {
       method: req.method ?? "GET",
       body: req.content,
     });
-    let content = await r.text();
+    const content = await r.text();
     if (estPageMobile(url)) {
-      // Pronote 2026.2 écrit « Start (…);} catch » au lieu de « Start (…)} catch » :
-      // pawnote 1.6.2 ne reconnaît plus la page. On remet l'ancien format.
-      content = content.replace(/\)\s*;\s*\}\s*catch/, ")} catch");
       journal.push({
         url: url.origin + url.pathname,
         status: r.status,
