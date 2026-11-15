@@ -186,6 +186,34 @@ Dans le dépôt : **Settings › Secrets and variables › Actions › onglet Va
 - Ne partage jamais `mes-secrets.txt` ou `mes-secrets.json`, ni le lien d'un calendrier, à quelqu'un dont tu ne veux pas qu'il voie ton emploi du temps.
 - Le token GitHub n'a que le droit « gist » : il ne peut rien faire d'autre sur ton compte.
 
+---
+
+## Mettre en pause ou tout arrêter
+
+### ⏸ Mettre en pause (par exemple pendant les vacances)
+Dans ton dépôt : **Actions** › **Synchro Pronote → iPhone** › bouton **⋯** en haut à droite › **Disable workflow**.
+Le robot ne tourne plus et le calendrier de l'iPhone reste figé tel quel.
+Pour relancer : même endroit › **Enable workflow**.
+
+### ⏹ Tout arrêter et tout supprimer
+Fais les étapes dans cet ordre :
+
+1. **Arrêter le robot** : supprime le dépôt GitHub : **Settings** › tout en bas, **Delete this repository**.
+   *(Si tu veux garder le code, fais seulement **Disable workflow** comme ci-dessus.)*
+2. **Supprimer les calendriers en ligne** : ouvre https://gist.github.com, clique sur le Gist
+   « Emploi du temps Pronote (calendriers iPhone) » › **Delete**. Les liens des calendriers ne marchent plus
+   et la clé de connexion Pronote (chiffrée) est effacée.
+3. **Révoquer le token GitHub** : https://github.com/settings/tokens › ligne `pronote-ical` › **Delete**.
+4. **Retirer les calendriers de l'iPhone** : **Réglages** › **Calendrier** › **Comptes** › touche chaque
+   « Calendrier avec abonnement » › **Supprimer le compte**.
+5. **Couper l'accès côté Pronote** : le script est vu par Pronote comme une « appli mobile ». S'il y a, dans ton
+   espace Pronote, une rubrique qui liste les appareils ou applis mobiles connectés, supprime celui-là. Sinon,
+   **changer ton mot de passe** (ENT/Pronote) invalide aussi la connexion. Après l'étape 2, plus rien ne peut s'en
+   servir de toute façon.
+6. **Nettoyer ton PC** : supprime le dossier du projet, en particulier `mes-secrets.txt` et `mes-secrets.json`.
+
+Après ça, il ne reste plus rien : ni robot, ni fichier en ligne, ni accès à ton Pronote.
+
 ## Licence
 © 2026 Sc4ros. Tous droits réservés. Voir le fichier [LICENSE](LICENSE).
 
