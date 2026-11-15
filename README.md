@@ -41,12 +41,38 @@ Pronote ──(toutes les 30 min)──► GitHub Actions ──► Gist secret 
 - **Node.js 20 ou plus** sur ton PC : https://nodejs.org (bouton « LTS »)
 
 ### 1. Mettre le projet sur GitHub (en **privé**)
-1. Sur GitHub : **New repository** › nom `pronote-ical` › coche **Private** › *Create repository*.
-2. Sur la page du dépôt vide, clique **uploading an existing file** et glisse **tout le contenu** de ce dossier
-   (y compris le dossier `.github`), **sauf** `node_modules`, `sortie` et `mes-secrets.txt`.
-   *(Si tu connais git : `git init`, `git add .`, `git commit`, `git push`, c'est pareil.)*
+1. Sur GitHub, en haut à droite : **+** › **New repository** › nom `pronote-ical` › coche **Private** › *Create repository*.
+2. Sur la page du dépôt vide, clique **uploading an existing file**.
+3. Ouvre le dossier du projet sur ton PC, sélectionne **tout** (Ctrl + A) et glisse-le dans la page GitHub,
+   **sauf** `node_modules`, `sortie` et `mes-secrets.txt` s'ils existent.
+4. Laisse **Commit directly to the main branch** coché, puis clique **Commit changes**.
 
-> ⚠️ Le dossier `.github` est caché sous Windows/Mac. Sous Windows : Explorateur › Affichage › Afficher › *Éléments masqués*.
+#### ⚠️ Le dossier `.github` ne s'envoie pas par glisser-déposer
+GitHub refuse les dossiers qui commencent par un point quand on les glisse dans la page. Or ce dossier contient
+le fichier qui lance la synchro automatique : **sans lui, rien ne se passe**. Il faut donc le créer à la main :
+
+1. Sur la page de ton dépôt : **Add file** › **Create new file**.
+2. Dans la case du nom, tape exactement `.github/workflows/sync.yml`
+   (chaque `/` crée un dossier, tu verras le chemin se construire tout seul).
+3. Sur ton PC, ouvre le fichier `.github/workflows/sync.yml` avec le Bloc-notes, **copie tout** et colle-le dans GitHub.
+   > Tu ne vois pas le dossier `.github` ? Il est caché : Explorateur › *Affichage* › *Afficher* › **Éléments masqués**.
+4. Clique **Commit changes…** puis **Commit changes**.
+5. Vérifie : l'onglet **Actions** du dépôt doit maintenant afficher « Synchro Pronote → iPhone » à gauche.
+   **Ne le lance pas encore** : il faut d'abord faire les étapes 2 et 3 ci-dessous.
+
+*(Si tu connais git, `git init`, `git add .`, `git commit` puis `git push` envoient tout, `.github` compris.)*
+
+À la fin, ton dépôt doit contenir :
+```
+.github/workflows/sync.yml
+src/
+test/
+.gitignore
+LICENSE
+README.md
+package-lock.json
+package.json
+```
 
 ### 2. Se connecter à Pronote (sur ton PC)
 Ouvre un terminal **dans ce dossier** et tape :
