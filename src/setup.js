@@ -13,7 +13,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import QRCode from "qrcode";
 import {
-  FICHIER_ETAT, chiffrer, creerGist, etatDepuis, lireGist, nouvelleCle, pronote, publier,
+  FICHIER_ETAT, chiffrer, creerFetcher, creerGist, diagnostic, etatDepuis, lireGist, nouvelleCle, pronote, publier,
   recupererCalendriers, urlBrute,
 } from "./coeur.js";
 
@@ -64,15 +64,27 @@ const api = {
     if (!/^\d{4}$/.test(String(pin ?? ""))) throw new Error("Le code doit faire exactement 4 chiffres.");
     if (DEMO) return demo.connexion();
     const deviceUUID = randomUUID();
-    const session = pronote.createSessionHandle();
+    const { fetcher, journal } = creerFetcher();
+    const session = pronote.createSessionHandle(fetcher);
     let refresh;
     try {
       refresh = await pronote.loginQrCode(session, { deviceUUID, pin: String(pin), qr });
     } catch (e) {
+      const diag = diagnostic(journal);
       console.error(e);
-      throw new Error(
+      console.error("\n--- Diagnostic ---\n" + diag + "\n");
+      if (e?.name === "PageUnavailableError") {
+        const err = new Error(
+          "Le serveur Pronote n'a pas renvoyé la page de connexion de l'appli mobile. Envoie le diagnostic ci-dessous à la personne qui t'aide.",
+        );
+        err.diagnostic = diag;
+        throw err;
+      }
+      const err = new Error(
         "Pronote a refusé la connexion. Le QR code a sans doute expiré ou le code est faux : génère un nouveau QR code dans Pronote et recommence.",
       );
+      err.diagnostic = `${e?.name ?? "Erreur"} : ${e?.message ?? e}`;
+      throw err;
     }
     connexion = { session, etat: etatDepuis(refresh, deviceUUID) };
     return { nom: session.user?.name ?? refresh.username };
@@ -207,7 +219,7 @@ const serveur = createServer(async (req, res) => {
     res.end();
   } catch (e) {
     res.writeHead(400, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ erreur: e.message }));
+    res.end(JSON.stringify({ erreur: e.message, diagnostic: e.diagnostic }));
   }
 });
 

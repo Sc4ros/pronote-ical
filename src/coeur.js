@@ -51,9 +51,60 @@ export const etatDepuis = (refresh, deviceUUID) => ({
   deviceUUID,
 });
 
+/* --------- « fetcher » : ce qui fait les requêtes HTTP vers Pronote --------- */
+// 1. Ajoute « bydlg » à la page mobile : sur les Pronote reliés à un ENT, ce paramètre
+//    évite d'être renvoyé vers la page de connexion de l'ENT (même astuce que pronotepy).
+// 2. Garde une trace de la réponse de la page mobile pour expliquer une éventuelle erreur.
+
+const BYDLG = "A6ABB224-12DD-4E31-AD3E-8A39A1C2C335";
+const estPageMobile = (url) => /\/mobile\.(eleve|parent|professeur)\.html$/i.test(url.pathname);
+
+export function creerFetcher() {
+  const journal = [];
+  const fetcher = async (req) => {
+    const url = new URL(req.url.href);
+    if (estPageMobile(url) && !url.searchParams.has("bydlg")) url.searchParams.set("bydlg", BYDLG);
+    const r = await fetch(url.href, {
+      redirect: req.redirect ?? "follow",
+      headers: req.headers ?? {},
+      method: req.method ?? "GET",
+      body: req.content,
+    });
+    let content = await r.text();
+    if (estPageMobile(url)) {
+      // Pronote 2026.2 écrit « Start (…);} catch » au lieu de « Start (…)} catch » :
+      // pawnote 1.6.2 ne reconnaît plus la page. On remet l'ancien format.
+      content = content.replace(/\)\s*;\s*\}\s*catch/, ")} catch");
+      journal.push({
+        url: url.origin + url.pathname,
+        status: r.status,
+        redirection: r.headers.get("location"),
+        titre: content.match(/<title>([^<]*)<\/title>/i)?.[1]?.trim(),
+        version: content.match(/>PRONOTE (\d+\.\d+\.\d+)/)?.[1],
+        debut: content.replace(/\s+/g, " ").slice(0, 300),
+      });
+    }
+    return { status: r.status, content, headers: r.headers };
+  };
+  return { fetcher, journal };
+}
+
+/** Explication lisible de ce que Pronote a répondu (pour les erreurs). */
+export function diagnostic(journal) {
+  const d = journal.at(-1);
+  if (!d) return "Aucune réponse de Pronote (problème de réseau ou adresse invalide).";
+  const lignes = [`Adresse : ${d.url}`, `Réponse : HTTP ${d.status}`];
+  if (d.redirection) lignes.push(`Redirection vers : ${d.redirection}`);
+  if (d.titre) lignes.push(`Titre de la page : ${d.titre}`);
+  lignes.push(d.version ? `Version Pronote : ${d.version}` : "Version Pronote : introuvable dans la page");
+  if (!d.version && !d.redirection) lignes.push(`Début de la page : ${d.debut}`);
+  return lignes.join("\n");
+}
+
 /** Reconnexion avec le jeton sauvegardé. Renvoie la session et le NOUVEL état. */
 export async function connexionJeton(etat) {
-  const session = pronote.createSessionHandle();
+  const { fetcher } = creerFetcher();
+  const session = pronote.createSessionHandle(fetcher);
   const refresh = await pronote.loginToken(session, {
     url: etat.url,
     kind: etat.kind,

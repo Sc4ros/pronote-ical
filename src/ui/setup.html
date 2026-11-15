@@ -111,6 +111,10 @@
   .pastille { width: 12px; height: 12px; border-radius: 50%; flex: none; background: var(--doux); }
   .cal .qr { background: #fff; border-radius: 8px; padding: 6px; }
   .cal .qr svg { display: block; width: 100%; height: auto; }
+  #diag pre {
+    white-space: pre-wrap; overflow-wrap: anywhere; font: 12.5px/1.5 ui-monospace, Consolas, monospace;
+    background: var(--bg); border: 1px solid var(--bord); border-radius: 8px; padding: 10px 12px; margin: 10px 0 8px;
+  }
   h3 { margin: 24px 0 4px; font-size: 16px; }
   .astuce {
     background: var(--zone); border-radius: 10px; padding: 12px 14px; font-size: 14.5px; margin-top: 12px;
@@ -155,6 +159,7 @@
       <button class="principal" id="btnConnexion" disabled>Se connecter à Pronote</button>
     </div>
     <div id="s1" class="statut"></div>
+    <div id="diag" hidden><pre id="diagTexte"></pre></div>
   </section>
 
   <!-- ÉTAPE 2 -->
@@ -221,7 +226,7 @@ async function appel(nom, corps = {}) {
     body: JSON.stringify(corps),
   });
   const json = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(json.erreur || "Erreur " + r.status);
+  if (!r.ok) { const e = new Error(json.erreur || "Erreur " + r.status); e.diagnostic = json.diagnostic; throw e; }
   return json;
 }
 
@@ -324,6 +329,7 @@ $("pin").addEventListener("keydown", (e) => { if (e.key === "Enter" && !$("btnCo
 $("btnConnexion").addEventListener("click", async () => {
   $("btnConnexion").disabled = true;
   statut($("s1"), "Connexion à Pronote…", "", true);
+  afficherDiagnostic(null);
   try {
     const { nom } = await appel("connexion", { qr: qrPronote, pin: $("pin").value });
     statut($("s1"), "Connecté(e) : " + nom, "ok");
@@ -333,9 +339,18 @@ $("btnConnexion").addEventListener("click", async () => {
     $("token").focus();
   } catch (e) {
     statut($("s1"), e.message, "erreur");
+    afficherDiagnostic(e.diagnostic);
     majBouton();
   }
 });
+
+function afficherDiagnostic(texte) {
+  $("diag").hidden = !texte;
+  if (!texte) return;
+  $("diagTexte").textContent = texte;
+  $("diag").querySelector(".copier")?.remove();
+  $("diag").append(boutonCopier(texte, "Copier le diagnostic"));
+}
 
 /* -------------------------------- étape 2 --------------------------------- */
 
