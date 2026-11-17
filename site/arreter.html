@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Arrêter · Pronote → iPhone</title>
+<link rel="icon" href="/icone.svg">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<main>
+  <nav class="barre"><a href="/">← Accueil</a><a href="/aide">Aide</a></nav>
+  <header>
+    <h1>Arrêter la synchro</h1>
+    <p>Pour les vacances, ou pour de bon. Tout se fait depuis le téléphone.</p>
+  </header>
+
+  <div class="choix">
+    <a class="choix-carte" href="#pause"><b>⏸ Mettre en pause</b><span>Les calendriers restent sur l'iPhone mais ne bougent plus. Reprise en 2 gestes.</span></a>
+    <a class="choix-carte" href="#tout"><b>⏹ Tout arrêter</b><span>On supprime tout : calendriers, copie GitHub, clé d'accès. Rien ne reste.</span></a>
+  </div>
+
+  <!-- Liens personnalisés -->
+  <section class="etape">
+    <h2>🔗 Tes liens directs</h2>
+    <p class="aide">Indique ton nom GitHub : les liens de cette page t'emmènent alors directement au bon endroit.</p>
+    <label for="login">Ton nom d'utilisateur GitHub</label>
+    <input type="text" id="login" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="ex. : sc4ros">
+    <label for="depot">Nom de ta copie</label>
+    <input type="text" id="depot" autocomplete="off" autocapitalize="off" spellcheck="false" value="pronote-ical">
+    <p class="statut" id="info"></p>
+  </section>
+
+  <!-- Pause -->
+  <section class="etape" id="pause">
+    <h2>⏸ Mettre en pause</h2>
+    <p class="aide">Idéal pour les grandes vacances. Rien n'est supprimé : tes calendriers restent sur l'iPhone, figés à la dernière mise à jour.</p>
+    <ol class="etapes">
+      <li><b>Ouvre la synchro de ta copie</b>
+        <span>Ta copie sur GitHub › onglet <b>Actions</b> › <b>Synchro Pronote → iPhone</b> (à gauche, ou dans le menu en haut sur téléphone).</span>
+        <a class="bouton secondaire" data-lien="workflow" target="_blank" rel="noopener">Ouvrir la synchro ↗</a></li>
+      <li><b>Désactive-la</b>
+        <span>Touche <b>⋯</b> en haut à droite, puis <b>Disable workflow</b>. Un bandeau « This workflow was disabled » confirme la pause.</span></li>
+    </ol>
+    <div class="astuce"><b>Pour reprendre</b> : même page, bouton <b>Enable workflow</b>. La synchro repart à la demi-heure suivante.
+      Si tu as fait une longue pause et que rien ne se met à jour, Pronote t'a peut-être déconnecté :
+      refais les étapes 2 et 3 de la <a href="/configurer">configuration</a>, tes abonnements restent valables.</div>
+  </section>
+
+  <!-- Tout arrêter -->
+  <section class="etape" id="tout">
+    <h2>⏹ Tout arrêter et tout supprimer</h2>
+    <p class="aide">Fais les étapes dans cet ordre. Compte 3 minutes.</p>
+    <ol class="etapes">
+      <li><b>Retire les calendriers de l'iPhone</b>
+        <span><i>Réglages</i> › <i>Calendrier</i> › <i>Comptes</i> › <i>Calendriers avec abonnement</i> › touche chaque calendrier Pronote › <b>Supprimer le compte</b>.</span></li>
+      <li><b>Supprime ta copie GitHub</b>
+        <span>Ça arrête la synchro pour de bon et efface les secrets. Tout en bas de la page : <b>Delete this repository</b>, puis suis les confirmations (GitHub te demande de retaper le nom).</span>
+        <a class="bouton secondaire" data-lien="reglages" target="_blank" rel="noopener">Ouvrir les réglages de ta copie ↗</a></li>
+      <li><b>Supprime le Gist</b>
+        <span>C'est là que sont rangés tes calendriers en ligne. Ouvre le Gist <b>« Emploi du temps Pronote (calendriers iPhone) »</b> › <b>Delete</b>.</span>
+        <a class="bouton secondaire" data-lien="gists" target="_blank" rel="noopener">Ouvrir mes Gists ↗</a></li>
+      <li><b>Supprime la clé d'accès</b>
+        <span>Touche la clé <b>pronote-ical</b> › <b>Delete</b> tout en bas.</span>
+        <a class="bouton secondaire" data-lien="cles" target="_blank" rel="noopener">Ouvrir mes clés GitHub ↗</a></li>
+      <li><b>Facultatif : côté Pronote</b>
+        <span>Si ton Pronote affiche la liste des appareils connectés à ton compte, tu peux y retirer l'appareil ajouté par le QR code. Sinon, pas d'inquiétude : sans ta copie GitHub, plus rien ne s'y connecte.</span></li>
+    </ol>
+    <div class="astuce">C'est tout ✅ Ce site ne garde aucune donnée sur toi : il n'y a rien à supprimer ici.
+      Tu pourras tout réinstaller quand tu veux depuis la <a href="/configurer">configuration</a>.</div>
+  </section>
+
+  <footer><a href="/aide">Aide et dépannage</a><br>Projet non officiel, sans lien avec Index Education.</footer>
+</main>
+<script type="module" src="/arreter.js"></script>
+</body>
+</html>

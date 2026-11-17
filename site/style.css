@@ -128,3 +128,17 @@ h2.section { font-size: 22px; margin: 36px 0 12px; letter-spacing: -.01em; }
 .faq details p, .faq details ul, .faq details ol { color: var(--doux); margin: 8px 0 0; }
 .faq details li { margin: 3px 0; }
 .schema { font-size: 14px; color: var(--doux); text-align: center; margin: 4px 0 0; }
+
+/* ------------------------------- page « Arrêter » ------------------------------- */
+.choix { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.choix-carte {
+  display: block; background: var(--carte); border: 1px solid var(--bord); border-radius: 14px; padding: 14px;
+  text-decoration: none; color: var(--texte);
+}
+.choix-carte b { display: block; font-size: 16px; margin-bottom: 4px; }
+.choix-carte span { color: var(--doux); font-size: 14px; }
+.etape .etapes { margin-top: 6px; }
+.etape .etapes .bouton { margin-top: 10px; padding: 11px 14px; font-size: 15px; }
+.etape .astuce a { font-weight: 600; }
+html { scroll-behavior: smooth; }
+section[id] { scroll-margin-top: 12px; }

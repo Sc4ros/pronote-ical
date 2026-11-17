@@ -102,6 +102,7 @@ async function verifier() {
 
   memoire.ecrire("token", token);
   memoire.ecrire("depot", nomDepot, true);
+  memoire.ecrire("login", ctx.login, true); // pour la page « Arrêter »
   return `${ctx.login}/${ctx.depot}`;
 }
 
