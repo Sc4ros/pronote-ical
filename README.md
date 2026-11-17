@@ -36,7 +36,7 @@ Pronote ──(toutes les 30 min)──► GitHub Actions ──► Gist secret 
 
 ## 📱 Le plus simple : tout depuis le téléphone
 
-Ouvre le site de configuration sur ton iPhone et suis les 4 étapes : **aucun PC, aucune installation**.
+👉 **https://pronote-ical.vercel.app** : ouvre ce site sur ton iPhone et suis les 4 étapes, **aucun PC, aucune installation**.
 
 1. **Ta copie du projet** : un bouton crée ton dépôt GitHub privé à partir de ce modèle.
 2. **Clé d'accès GitHub** : un formulaire pré-rempli (droits *Actions*, *Secrets* et *Gists*, limités à ta copie).
