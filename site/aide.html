@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Aide · Pronote → iPhone</title>
+<link rel="icon" href="/icone.svg">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<main>
+  <nav class="barre"><a href="/">← Accueil</a><a href="/configurer">Configurer</a></nav>
+  <header><h1>Aide et dépannage</h1><p>Les problèmes les plus courants, et comment les régler depuis ton téléphone.</p></header>
+
+  <div class="faq">
+    <details open><summary>Mon calendrier ne se met plus à jour</summary>
+      <p>Pronote a probablement déconnecté l'appareil (changement de mot de passe, rentrée, Pronote réinitialisé…).</p>
+      <ol>
+        <li>Ouvre la <a href="/configurer">page de configuration</a> et refais simplement les étapes 2 et 3.</li>
+        <li>Le même calendrier secret est réutilisé : tes abonnements sur l'iPhone continuent de marcher, rien à refaire.</li>
+      </ol>
+      <p>Pour voir l'erreur exacte : ta copie sur GitHub › onglet <b>Actions</b> › la dernière synchro en rouge.</p></details>
+
+    <details><summary>« La synchro a échoué » pendant la configuration</summary>
+      <p>Le plus souvent, le QR code a expiré : il n'est valable que quelques minutes. Le code à 4 chiffres doit aussi être celui choisi au moment d'afficher ce QR code. Génère un <b>nouveau</b> QR code, fais la capture et lance tout de suite.</p></details>
+
+    <details><summary>« Aucun QR code trouvé » sur ma capture</summary>
+      <p>Recadre la capture d'écran pour que le QR code prenne le plus de place possible, ou zoome dans Pronote avant la capture. Tu peux aussi prendre en photo un QR code affiché sur un autre écran.</p></details>
+
+    <details><summary>« La clé n'a pas le droit… »</summary>
+      <p>Sur GitHub : photo de profil › <b>Settings</b> › <b>Developer settings</b> › <b>Fine-grained tokens</b> › ta clé <b>pronote-ical</b> › <b>Edit</b>. Vérifie :</p>
+      <ul>
+        <li><b>Repository access</b> : <i>Only select repositories</i> › ta copie <b>pronote-ical</b></li>
+        <li><b>Repository permissions</b> : <i>Actions</i> et <i>Secrets</i> en <b>Read and write</b></li>
+        <li><b>Account permissions</b> : <i>Gists</i> en <b>Read and write</b></li>
+      </ul></details>
+
+    <details><summary>Les cours apparaissent en double</summary>
+      <p>Tu t'es abonné à « tout l'emploi du temps » <b>et</b> aux matières. Garde l'un ou l'autre : iPhone › <i>Calendrier</i> › <i>Calendriers</i> › (i) à côté du calendrier en trop › <i>Supprimer</i>.</p></details>
+
+    <details><summary>Cacher les cours annulés, changer le nombre de semaines</summary>
+      <p>Ta copie sur GitHub › <b>Settings</b> › <b>Secrets and variables</b> › <b>Actions</b> › onglet <b>Variables</b> › <b>New repository variable</b> :</p>
+      <ul>
+        <li><code>AFFICHER_ANNULES</code> = <code>non</code> pour faire disparaître les cours annulés</li>
+        <li><code>SEMAINES_APRES</code> : nombre de semaines à venir (8 par défaut)</li>
+        <li><code>SEMAINES_AVANT</code> : nombre de semaines passées (1 par défaut)</li>
+      </ul></details>
+
+    <details><summary>Mettre en pause</summary>
+      <p>Ta copie sur GitHub › <b>Actions</b> › <i>Synchro Pronote → iPhone</i> › <b>⋯</b> › <b>Disable workflow</b>. Même chemin avec <b>Enable workflow</b> pour reprendre.</p></details>
+
+    <details><summary>Tout supprimer</summary>
+      <ol>
+        <li>Sur l'iPhone, supprime les calendriers Pronote (<i>Calendrier › Calendriers</i>).</li>
+        <li>Supprime ta copie : ta copie sur GitHub › <b>Settings</b> › tout en bas › <b>Delete this repository</b>.</li>
+        <li>Supprime le Gist : <a href="https://gist.github.com" target="_blank" rel="noopener">gist.github.com</a> › le Gist « Emploi du temps Pronote » › <b>Delete</b>.</li>
+        <li>Supprime la clé : <a href="https://github.com/settings/personal-access-tokens" target="_blank" rel="noopener">github.com/settings/personal-access-tokens</a> › <b>pronote-ical</b> › <b>Delete</b>.</li>
+        <li>Dans Pronote, tu peux aussi retirer l'appareil de la liste des appareils connectés.</li>
+      </ol></details>
+  </div>
+
+  <footer>Projet non officiel, sans lien avec Index Education.</footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="light dark">
+<title>Configuration · Pronote → iPhone</title>
+<link rel="icon" href="/icone.svg">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<main>
+  <nav class="barre"><a href="/">← Accueil</a><a href="/aide">Aide</a></nav>
+  <header>
+    <h1>Configuration</h1>
+    <p>Tout se fait depuis ton téléphone. Compte environ 5 minutes.</p>
+  </header>
+
+  <!-- 1. Copie du projet -->
+  <section class="etape" id="e1">
+    <h2><span class="num"><span>1</span></span> Ta copie du projet</h2>
+    <ol class="aide">
+      <li>Connecte-toi à GitHub, ou <a href="https://github.com/signup" target="_blank" rel="noopener">crée un compte gratuit ↗</a>.</li>
+      <li>Touche le bouton ci-dessous, mets <b class="k">pronote-ical</b> comme nom, choisis <b class="k">Private</b>,
+        puis <b class="k">Create repository</b>.</li>
+      <li>Reviens ici.</li>
+    </ol>
+    <a class="bouton" id="lienModele" target="_blank" rel="noopener">Créer ma copie sur GitHub ↗</a>
+    <details><summary>Déjà fait ?</summary>Passe directement à l'étape 2.</details>
+  </section>
+
+  <!-- 2. Token GitHub -->
+  <section class="etape" id="e2">
+    <h2><span class="num"><span>2</span></span> Clé d'accès GitHub</h2>
+    <p class="aide">Cette clé permet à cette page de tout régler à ta place, puis aux synchros de mettre à jour tes calendriers.</p>
+    <ol class="aide">
+      <li>Touche le bouton : le formulaire est déjà pré-rempli.</li>
+      <li>Dans <b class="k">Repository access</b>, choisis <b class="k">Only select repositories</b> puis ta copie
+        <b class="k">pronote-ical</b>.</li>
+      <li>Vérifie les droits : <b class="k">Actions</b>, <b class="k">Secrets</b> et <b class="k">Gists</b> en
+        <b class="k">Read and write</b>.</li>
+      <li><b class="k">Generate token</b>, puis copie la clé <code>github_pat_…</code> et colle-la ici.</li>
+    </ol>
+    <a class="bouton secondaire" id="lienToken" target="_blank" rel="noopener">Créer la clé sur GitHub ↗</a>
+    <label for="token">Clé GitHub</label>
+    <input type="password" id="token" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="github_pat_…">
+    <label for="depot">Nom de ta copie</label>
+    <input type="text" id="depot" autocomplete="off" autocapitalize="off" spellcheck="false" value="pronote-ical">
+    <button class="bouton" id="btnVerifier">Vérifier</button>
+    <div class="statut" id="s2"></div>
+  </section>
+
+  <!-- 3. Pronote -->
+  <section class="etape inactive" id="e3">
+    <h2><span class="num"><span>3</span></span> Connexion à Pronote</h2>
+    <ol class="aide">
+      <li>Ouvre Pronote dans Safari (pas dans l'appli) et connecte-toi comme d'habitude.</li>
+      <li>Touche l'icône <b class="k">QR code / téléphone</b> en haut de la page et choisis un
+        <b class="k">code à 4 chiffres</b>.</li>
+      <li>Fais une <b class="k">capture d'écran</b> du QR code qui s'affiche, puis reviens ici.</li>
+    </ol>
+    <button id="zone" type="button">
+      <strong>📷 Choisir la capture d'écran</strong>
+      <small>ou prendre le QR code en photo depuis un autre écran</small>
+    </button>
+    <input type="file" id="fichier" accept="image/*" hidden>
+    <div id="apercu"><img id="miniature" alt=""><div class="statut" id="qrStatut"></div></div>
+    <label for="pin">Code à 4 chiffres</label>
+    <input type="tel" id="pin" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••">
+    <div class="astuce">⏱ Le QR code expire au bout de quelques minutes : une fois la capture faite, enchaîne directement.</div>
+    <button class="bouton" id="btnLancer" disabled>Lancer la configuration</button>
+    <ul id="journal"></ul>
+  </section>
+
+  <!-- 4. Calendriers -->
+  <section class="etape inactive" id="e4">
+    <h2><span class="num"><span>4</span></span> Ajouter les calendriers</h2>
+    <p class="aide">Touche <b class="k">S'abonner</b> puis <b class="k">S'abonner</b> à nouveau dans la fenêtre de l'iPhone.
+      Ajoute <b class="k">⭐ tout l'emploi du temps</b>, <i>ou</i> une matière par calendrier (pour avoir les couleurs) :
+      pas les deux, sinon les cours apparaissent en double.</p>
+    <div id="calendriers"></div>
+    <div class="astuce">C'est fini 🎉 L'emploi du temps se met à jour tout seul toutes les 30 minutes.
+      Tu peux fermer cette page. Pour reconnecter Pronote plus tard, reviens simplement ici.</div>
+  </section>
+
+  <footer>Rien n'est envoyé ailleurs que sur GitHub : cette page tourne entièrement dans ton navigateur.<br>
+    Projet non officiel, sans lien avec Index Education.</footer>
+</main>
+
+<script type="module" src="/configurer.js"></script>
+</body>
+</html>

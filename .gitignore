@@ -1,0 +1,5 @@
+node_modules/
+sortie/
+mes-secrets.json
+mes-secrets.txt
+.vercel

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Ton emploi du temps Pronote directement dans le calendrier de ton iPhone, mis à jour tout seul. Gratuit, configuration depuis le téléphone.">
+<title>Pronote → iPhone</title>
+<link rel="icon" href="/icone.svg">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<main>
+  <section class="hero">
+    <div class="logo">📅</div>
+    <h1>Ton emploi du temps Pronote dans le calendrier de ton iPhone</h1>
+    <p>Cours, salles, profs, cours annulés et retenues. Mis à jour tout seul, toutes les 30 minutes.</p>
+    <a class="bouton" href="/configurer">Commencer, c'est gratuit →</a>
+    <small>Tout se fait depuis le téléphone · environ 5 minutes</small>
+  </section>
+
+  <div class="apercu-cal" aria-label="Exemple de calendrier">
+    <p class="jour">LUNDI</p>
+    <div class="evt c1"><span class="h">08:00</span><div><b>🔵 Mathématiques</b><span>B204 · M. Dupont</span></div></div>
+    <div class="evt c2"><span class="h">09:00</span><div><b>❌ ANNULÉ · Physique-chimie</b><span>Prof. absent</span></div></div>
+    <div class="evt c3"><span class="h">10:00</span><div><b>🟢 Anglais LV1</b><span>C101 · Changement de salle</span></div></div>
+    <div class="evt c4"><span class="h">17:00</span><div><b>Retenue</b><span>Travail non fait</span></div></div>
+  </div>
+
+  <h2 class="section">Ce que tu obtiens</h2>
+  <div class="atouts">
+    <div class="atout"><b>🔄 Toujours à jour</b><span>Un changement de salle ou un prof absent apparaît dans ton calendrier dans la demi-heure.</span></div>
+    <div class="atout"><b>🎨 Une couleur par matière</b><span>Les mêmes couleurs que dans Pronote, avec un calendrier par matière si tu veux.</span></div>
+    <div class="atout"><b>🏫 Marche avec tous les ENT</b><span>Connexion par le QR code de Pronote : ton mot de passe n'est jamais demandé.</span></div>
+    <div class="atout"><b>🔒 Tes données restent chez toi</b><span>Tout tourne sur ton propre compte GitHub (gratuit). Ce site ne stocke rien.</span></div>
+  </div>
+
+  <h2 class="section">Comment ça marche</h2>
+  <ol class="etapes">
+    <li><b>Tu crées ta copie du projet sur GitHub</b><span>Un bouton, un nom, c'est fait. Un compte GitHub gratuit suffit.</span></li>
+    <li><b>Tu crées une clé d'accès</b><span>Le formulaire est pré-rempli : tu choisis ta copie et tu valides.</span></li>
+    <li><b>Tu montres ton QR code Pronote</b><span>Une capture d'écran du QR code de Pronote et ton code à 4 chiffres.</span></li>
+    <li><b>Tu t'abonnes aux calendriers</b><span>Un bouton « S'abonner » par calendrier, directement sur l'iPhone.</span></li>
+  </ol>
+  <p class="schema">Pronote → ton GitHub (toutes les 30 min) → calendrier secret → ton iPhone</p>
+  <a class="bouton" href="/configurer">Configurer maintenant →</a>
+
+  <h2 class="section">Questions fréquentes</h2>
+  <div class="faq">
+    <details><summary>C'est vraiment gratuit ?</summary>
+      <p>Oui. La synchro utilise les minutes gratuites de GitHub Actions, suffisantes pour une synchro toutes les 30 minutes.</p></details>
+    <details><summary>Pourquoi il faut un compte GitHub ?</summary>
+      <p>Pour que ce soit <b>ton</b> compte qui se connecte à Pronote, et pas un serveur inconnu. Personne d'autre, même pas l'auteur de ce site, n'a accès à ta connexion Pronote ni à ton emploi du temps.</p></details>
+    <details><summary>Mes identifiants sont en sécurité ?</summary>
+      <p>Ton mot de passe ENT n'est jamais demandé. La connexion Pronote est chiffrée (AES-256), et la clé de chiffrement est rangée dans les secrets de ta copie privée sur GitHub. Les calendriers sont dans un Gist secret dont personne ne peut deviner l'adresse.</p></details>
+    <details><summary>Ça marche sur Android / Google Agenda ?</summary>
+      <p>Oui : à la fin, touche « Copier » au lieu de « S'abonner », puis dans Google Agenda sur ordinateur : <i>Autres agendas › + › À partir de l'URL</i>.</p></details>
+    <details><summary>C'est officiel ?</summary>
+      <p>Non. C'est un projet indépendant, sans lien avec Index Education (l'éditeur de Pronote).</p></details>
+  </div>
+
+  <footer><a href="/aide">Aide et dépannage</a> · <a href="https://github.com/Sc4ros/pronote-ical" target="_blank" rel="noopener">Code source</a><br>
+    Projet non officiel, sans lien avec Index Education.</footer>
+</main>
+</body>
+</html>

@@ -34,45 +34,62 @@ Pronote ──(toutes les 30 min)──► GitHub Actions ──► Gist secret 
 
 ---
 
-## Installation (≈ 15 min, une seule fois)
+## 📱 Le plus simple : tout depuis le téléphone
+
+Ouvre le site de configuration sur ton iPhone et suis les 4 étapes : **aucun PC, aucune installation**.
+
+1. **Ta copie du projet** : un bouton crée ton dépôt GitHub privé à partir de ce modèle.
+2. **Clé d'accès GitHub** : un formulaire pré-rempli (droits *Actions*, *Secrets* et *Gists*, limités à ta copie).
+3. **Connexion à Pronote** : une capture d'écran du QR code de Pronote et ton code à 4 chiffres.
+   La page crée le Gist secret, enregistre les 3 secrets et lance la première synchro toute seule.
+4. **Abonnement** : un bouton « S'abonner » par calendrier.
+
+> Comment ça marche sans PC ? Un navigateur ne peut pas parler directement à Pronote. La page dépose donc
+> le QR code et le code **chiffrés** (AES-256) dans ton Gist secret, puis lance GitHub Actions, et c'est GitHub qui
+> fait la première connexion à Pronote. Le QR code est remplacé par le jeton Pronote dès la connexion faite.
+> La page tourne entièrement dans le navigateur : elle ne parle qu'à `api.github.com`.
+
+L'installation sur PC ci-dessous (`npm run setup`) marche toujours, si tu préfères.
+
+### Déjà installé avec la v1 ?
+
+Rien ne t'oblige à changer : ton installation continue de marcher. Pour passer à la configuration depuis le
+téléphone (et pouvoir reconnecter Pronote sans PC) :
+
+1. Crée une nouvelle copie avec **Use this template**, puis suis le site de configuration.
+   Le site **retrouve ton Gist existant** : tes abonnements sur l'iPhone restent valables, rien à refaire.
+2. Supprime ensuite ton ancienne copie (ou désactive sa synchro dans **Actions**) : sa clé `CLE_ETAT`
+   ne correspond plus au Gist, ses synchros échoueraient.
+
+### Mettre le site en ligne (pour la personne qui héberge le site)
+
+Le site est 100 % statique (dossier `site/`), sans serveur ni base de données : il ne stocke rien.
+
+1. Sur GitHub, dans ce dépôt : **Settings** › coche **Template repository** (indispensable pour le bouton de l'étape 1).
+   Le dépôt doit être **public** pour que d'autres puissent le copier.
+2. Sur [vercel.com](https://vercel.com) : **Add New… › Project** › importe ce dépôt › **Deploy**.
+   Tout est déjà réglé dans `vercel.json` (dossier `site/`, pas de compilation, en-têtes de sécurité).
+3. Si le dépôt n'est pas `Sc4ros/pronote-ical`, change la constante `SOURCE` en haut de `site/configurer.js`.
+
+Après une modification de `src/web/outils.js`, recompile avec `npm run build:mobile` (le fichier `site/outils.js` est commité).
+
+---
+
+## Installation sur PC (≈ 15 min, une seule fois)
 
 ### 0. Ce qu'il te faut
 - Un compte **GitHub** (gratuit) : https://github.com/signup
 - **Node.js 20 ou plus** sur ton PC : https://nodejs.org (bouton « LTS »)
 
-### 1. Mettre le projet sur GitHub (en **privé**)
-1. Sur GitHub, en haut à droite : **+** › **New repository** › nom `pronote-ical` › coche **Private** › *Create repository*.
-2. Sur la page du dépôt vide, clique **uploading an existing file**.
-3. Ouvre le dossier du projet sur ton PC, sélectionne **tout** (Ctrl + A) et glisse-le dans la page GitHub,
-   **sauf** `node_modules`, `sortie` et `mes-secrets.txt` s'ils existent.
-4. Laisse **Commit directly to the main branch** coché, puis clique **Commit changes**.
-
-#### ⚠️ Le dossier `.github` ne s'envoie pas par glisser-déposer
-GitHub refuse les dossiers qui commencent par un point quand on les glisse dans la page. Or ce dossier contient
-le fichier qui lance la synchro automatique : **sans lui, rien ne se passe**. Il faut donc le créer à la main :
-
-1. Sur la page de ton dépôt : **Add file** › **Create new file**.
-2. Dans la case du nom, tape exactement `.github/workflows/sync.yml`
-   (chaque `/` crée un dossier, tu verras le chemin se construire tout seul).
-3. Sur ton PC, ouvre le fichier `.github/workflows/sync.yml` avec le Bloc-notes, **copie tout** et colle-le dans GitHub.
-   > Tu ne vois pas le dossier `.github` ? Il est caché : Explorateur › *Affichage* › *Afficher* › **Éléments masqués**.
-4. Clique **Commit changes…** puis **Commit changes**.
-5. Vérifie : l'onglet **Actions** du dépôt doit maintenant afficher « Synchro Pronote → iPhone » à gauche.
+### 1. Créer ta copie du projet sur GitHub (en **privé**)
+1. Ouvre https://github.com/Sc4ros/pronote-ical/generate (bouton **Use this template**).
+2. Nom `pronote-ical`, coche **Private**, puis **Create repository**.
+3. Vérifie : l'onglet **Actions** de ta copie affiche « Synchro Pronote → iPhone » à gauche.
    **Ne le lance pas encore** : il faut d'abord faire les étapes 2 et 3 ci-dessous.
 
-*(Si tu connais git, `git init`, `git add .`, `git commit` puis `git push` envoient tout, `.github` compris.)*
+Le fichier qui lance la synchro (`.github/workflows/sync.yml`) est déjà dans le modèle : rien à créer à la main.
+Pour la suite, télécharge aussi le projet sur ton PC (**Code** › **Download ZIP**, puis décompresse-le).
 
-À la fin, ton dépôt doit contenir :
-```
-.github/workflows/sync.yml
-src/
-test/
-.gitignore
-LICENSE
-README.md
-package-lock.json
-package.json
-```
 
 ### 2. Se connecter à Pronote (sur ton PC)
 Ouvre un terminal **dans ce dossier** et tape :

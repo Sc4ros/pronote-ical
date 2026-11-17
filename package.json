@@ -1,6 +1,6 @@
 {
   "name": "pronote-ical",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "description": "Synchronise l'emploi du temps Pronote vers le calendrier de l'iPhone (abonnement .ics mis à jour toutes les heures).",
   "author": "Sc4ros",
@@ -12,11 +12,16 @@
   "scripts": {
     "setup": "node src/setup.js",
     "sync": "node src/sync.js",
-    "test": "node test/test-ics.js"
+    "test": "node test/test-ics.js && node test/test-mobile.js",
+    "build:mobile": "esbuild src/web/outils.js --bundle --format=esm --minify --outfile=site/outils.js"
   },
   "devDependencies": {
+    "blakejs": "1.2.1",
+    "esbuild": "0.25.10",
     "jsqr": "1.4.0",
-    "qrcode": "1.5.4"
+    "libsodium-wrappers": "0.7.15",
+    "qrcode": "1.5.4",
+    "tweetnacl": "1.0.3"
   },
   "dependencies": {
     "@blockshub/pawnote-lts": "1.6.4"

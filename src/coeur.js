@@ -113,6 +113,21 @@ export async function connexionJeton(etat) {
   return { session, etat: etatDepuis(refresh, etat.deviceUUID) };
 }
 
+/** Première connexion par QR code (utilisée par la configuration depuis le téléphone :
+ *  la page mobile dépose le QR code + le code PIN chiffrés dans le Gist, et c'est
+ *  GitHub Actions qui se connecte, car un navigateur ne peut pas appeler Pronote). */
+export async function connexionQr({ qr, pin, deviceUUID }) {
+  const { fetcher, journal } = creerFetcher();
+  const session = pronote.createSessionHandle(fetcher);
+  try {
+    const refresh = await pronote.loginQrCode(session, { deviceUUID, pin: String(pin), qr });
+    return { session, etat: etatDepuis(refresh, deviceUUID) };
+  } catch (e) {
+    e.diagnostic = diagnostic(journal);
+    throw e;
+  }
+}
+
 const JOUR = 24 * 3600 * 1000;
 
 function lundi(d) {

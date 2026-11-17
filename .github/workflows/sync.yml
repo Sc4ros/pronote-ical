@@ -1,0 +1,34 @@
+name: Synchro Pronote → iPhone
+
+on:
+  schedule:
+    - cron: "*/30 5-20 * * *" # toutes les 30 min, de 6 h à 22 h (heure de Paris, en hiver)
+  workflow_dispatch: # bouton « Run workflow » (et la page de configuration mobile)
+
+# Jamais deux synchros en même temps : Pronote change le jeton à chaque connexion.
+concurrency:
+  group: synchro-pronote
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  synchro:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci --omit=dev --no-audit --no-fund
+      - run: npm run sync
+        env:
+          GIST_ID: ${{ secrets.GIST_ID }}
+          GIST_TOKEN: ${{ secrets.GIST_TOKEN }}
+          CLE_ETAT: ${{ secrets.CLE_ETAT }}
+          AFFICHER_ANNULES: ${{ vars.AFFICHER_ANNULES }}
+          SEMAINES_AVANT: ${{ vars.SEMAINES_AVANT }}
+          SEMAINES_APRES: ${{ vars.SEMAINES_APRES }}
